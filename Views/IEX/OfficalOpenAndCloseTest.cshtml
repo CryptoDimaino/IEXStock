@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "Offical Open And Close Test";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Offical Open And Close Test</h1>
+</div>
+<br>
+<h3>High: @ViewBag.OfficalOpenAndClose.high</h3>
+<h3>Low: @ViewBag.OfficalOpenAndClose.low</h3>
+<h3>Open: @ViewBag.OfficalOpenAndClose.open.price</h3>
+<h3>Time: @Time.FromUnixTime(ViewBag.OfficalOpenAndClose.open.time)</h3>
+<h3>Close: @ViewBag.OfficalOpenAndClose.close.price</h3>
+<h3>Time: @Time.FromUnixTime(ViewBag.OfficalOpenAndClose.close.time)</h3>

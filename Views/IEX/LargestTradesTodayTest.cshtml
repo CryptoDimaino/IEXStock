@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "Largest Trades Today Test";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Largest Trades Today Test</h1>
+</div>
+<br>
+@foreach(var Stock in @ViewBag.LargestTradesToday)
+{
+    <h3>Price: @Stock.price</h3>
+    <h3>Size: @Stock.size</h3>
+    <h3>Time: @Stock.time</h3>
+    <h3>Time Label: @Stock.timeLabel</h3>
+    <h3>Venue: @Stock.venue</h3>
+    <h3>Venue Name: @Stock.venueName</h3>
+    <h5>Total Price: @Stock.TotalPrice</h5>
+    <br>
+}

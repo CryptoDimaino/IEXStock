@@ -1,0 +1,22 @@
+@{
+    ViewData["Title"] = "Markets Test";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Markets Test</h1>
+</div>
+<br>
+@foreach(var Market in @ViewBag.Markets)
+{
+    <h3>Mic: @Market.mic</h3>
+    <h3>Tape ID: @Market.tapeId</h3>
+    <h3>Venue Name: @Market.venueName</h3>
+    <h3>Volume: @Market.volume</h3>
+    <h3>Tape A: @Market.tapeA</h3>
+    <h3>Tape B: @Market.tapeB</h3>
+    <h3>Tape C: @Market.tapeC</h3>
+    <h3>Market Percentage: @Market.marketPercent</h3>
+    <h3>Last Updated: @Market.lastUpdated</h3>
+    <h5>Market Percentage: @Market.marketPercentageString</h5>
+    <br>
+}

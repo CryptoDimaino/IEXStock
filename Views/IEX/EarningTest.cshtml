@@ -1,0 +1,26 @@
+@{
+    ViewData["Title"] = "Earning Test";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Earning Test</h1>
+</div>
+<br>
+<h3>Symbol: @ViewBag.Earning.symbol</h3>
+@foreach(var Earning in @ViewBag.Earning.earnings)
+{
+    <h3>Actual EPS: @Earning.actualEPS</h3>
+    <h3>Consensus EPS: @Earning.consensusEPS</h3>
+    <h3>Estimated EPS: @Earning.estimatedEPS</h3>
+    <h3>Announce Time: @Earning.announceTime</h3>
+    <h3>Number Of Estimates: @Earning.numberOfEstimates</h3>
+    <h3>EPS Surprise Dollar: @Earning.EPSSurpriseDollar</h3>
+    <h3>EPS Report Date: @Earning.EPSReportDate</h3>
+    <h3>Fiscal Period: @Earning.fiscalPeriod</h3>
+    <h3>Fiscal End Date: @Earning.fiscalEndDate</h3>
+    <h3>Year Ago: @Earning.yearAgo</h3>
+    <h3>Year Ago Change Percent: @Earning.yearAgoChangePercent</h3>
+    <h3>Estimated Change Percent: @Earning.estimatedChangePercent</h3>
+    <h3>Symbol Id: @Earning.symbolId</h3>
+    <br>
+}

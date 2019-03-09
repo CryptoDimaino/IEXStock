@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "Chart Test";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Chart Test</h1>
+</div>
+<br>
+@foreach(var Chart in @ViewBag.Chart)
+{
+    <h3>Date: @Chart.date</h3>
+    <h3>Open: @Chart.open</h3>
+    <h3>High: @Chart.high</h3>
+    <h3>Low: @Chart.low</h3>
+    <h3>Close: @Chart.close</h3>
+    <h3>Volume: @Chart.volume</h3>
+    <h3>Unadjusted Volume: @Chart.unadjustedVolume</h3>
+    <h3>Change: @Chart.change</h3>
+    <h3>Change Percent: @Chart.changePercent</h3>
+    <h3>VWAP: @Chart.vwap</h3>
+    <h3>Label: @Chart.label</h3>
+    <h3>Change Over Time: @Chart.changeOverTime</h3>
+    <br>
+}
