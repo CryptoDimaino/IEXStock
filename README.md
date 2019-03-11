@@ -8,7 +8,7 @@ returns a string of the symbols price.
 ### IEX/PreviousDay/{symbol}
 returns an IEXPreviousDay model with some information about the previous day
 Example:
-
+```json
 {
   "symbol": "MSFT",
   "date": "2019-03-08",
@@ -22,11 +22,11 @@ Example:
   "changePercent": 0.109,
   "vwap": 109.7359
 }
-
+````
 ### IEX/OfficialOpenAndClose/{symbol}
 returns an IEXOfficalOpenAndClose model with some information about the offical open and close time and price
 Example: 
-
+```json
 {
   "open": {
     "price": 110.99,
@@ -39,12 +39,12 @@ Example:
   "high": 112.95,
   "low": 110.98
 }
-
+```
 ### IEX/StockStats/{symbol}
 returns an IEXStockStats model with a lot of information about the stock
 
 Example:
-
+```json
 {
   "companyName": "Microsoft Corporation",
   "marketcap": 847856307917,
@@ -97,12 +97,12 @@ Example:
   "day5ChangePercent": -0.015588811687154818,
   "day30ChangePercent": 0.03556977421936349
 }
-
+```
 ### IEX/LargestTradesToday/{symbol}
 returns a list of IEXLargestTradesToday models with information about theamount at what price and which exchange was used.
 
 Example:
-
+```json
 [
   {
     "price": 111.995,
@@ -185,23 +185,23 @@ Example:
     "venueName": "Off Exchange"
   }
 ]
-
+```
 
 ### IEX/Logo/{symbol}
 returns an IEXLogo model with the url to an image.
 
 Example: 
 
-
+```json
 {
   "url": "https://storage.googleapis.com/iex/api/logos/MSFT.png"
 }
-
+```
 ### IEX/Earning/{symbol}
 returns te last 4 years if available.
 
 Example:
-
+```json
 {
   "symbol": "MSFT",
   "earnings": 
@@ -268,12 +268,12 @@ Example:
     }
   ]
 }
-
+```
 ### IEX/Chart/{symbol}
 returns a list of the last 30 days worth of trades.
 
 Example: 
-
+```json
 [
   {
     "date": "2019-02-11",
@@ -542,11 +542,11 @@ Example:
     "changeOverTime": 0.020539455822463495
   }
 ]
-
+```
 
 ### IEX/Markets
 returns information about the big exchanges that IEX tracks.
-
+```json
 Example:
 [
   {
@@ -704,11 +704,11 @@ Example:
     "lastUpdated": 1552338455129
   }
 ]
-
+```
 
 ### IEX/TOPS
 returns a select number of stock if no parameters returns all stocks tracked by IEX.
-
+```json
 [
   {
     "symbol": "SNAP",
@@ -755,4 +755,5 @@ returns a select number of stock if no parameters returns all stocks tracked by 
     "volume": 477117,
     "marketPercent": 0.01979
   }
+  ```
 ]
