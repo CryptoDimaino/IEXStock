@@ -203,6 +203,13 @@ namespace IEXStock.Controllers
             return View();
         }
 
+        [HttpGet("ChartTest1")]
+        public async Task<IActionResult> ChartTest1()
+        {
+            ViewBag.MonthChart = await MonthChart("msft");
+            return View();
+        }
+
         // https://api.iextrading.com/1.0/market
         // Markets
         [HttpGet("Markets")]
