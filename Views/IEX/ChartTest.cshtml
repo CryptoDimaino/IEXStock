@@ -1,24 +1,122 @@
 @{
     ViewData["Title"] = "Chart Test";
+
 }
+
+<script src="https://unpkg.com/babel-polyfill@6.26.0/dist/polyfill.js"></script>
+<script src="https://unpkg.com/custom-event-polyfill@0.3.0/custom-event-polyfill.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/document-register-element/1.8.0/document-register-element.js"></script>
+<!-- use babel so that we can use arrow functions and other goodness in this block! -->
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script src="https://unpkg.com/d3@5.5.0"></script>
+<script src="https://unpkg.com/d3fc@14.0.3"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- <input type="hidden" id="customInput" data-value = "@ViewBag.Chart" /> -->
+<!-- <input type="hidden" id="customInput1" data-value = "@ViewBag.MonthChart" /> -->
+<!-- <input type="hidden" id="customInput1" data-value = "@ViewBag.OnYearChart" /> -->
+<input type="hidden" id="customInput1" data-value = "@ViewBag.DayChart" />
+
+<script>
+const volumeSeries = fc.autoBandwidth(fc.seriesSvgBar())
+  .mainValue(d => d.volume)
+	.crossValue(d => d.minute)
+	.decorate(sel =>
+    sel.enter()
+    	.attr('fill', d => d.open > d.close ? 'red' : 'green')
+   )
+
+// adapt the d3 time scale to add discontinuities, so that weekends are removed
+const xScale = fc.scaleDiscontinuous(d3.scaleTime())
+  .discontinuityProvider(fc.discontinuitySkipWeekends());
+
+const chart = fc.chartSvgCartesian(
+    xScale,
+    d3.scaleLinear()
+  )
+	.yOrient('left')
+	.yLabel('volume (millions of dollars)')
+  .yTickFormat(d3.format(',.3s'))
+	.plotArea(volumeSeries);
+
+// use the extent component to determine the x and y domain
+const durationDay = 864e5;
+const xExtent = fc.extentDate()
+    .accessors([d => d.minute])
+	// pad by one day on either side of the scale
+	//.padUnit('domain')
+	//.pad([durationDay, durationDay]);
+
+const yExtent = fc.extentLinear()
+	.accessors([d => d.volume])
+	.include([0])
+	// pad by 10% at the upper end
+	.pad([0, 0.1]);
+
+const parseTime = d3.timeParse("%H:%M");
+// const parseDate = d3.timeParse("%Y%m%d");
+
+
+// var list = $("#customInput").data("value");
+// var myBlob = URL.createObjectURL(new Blob([list], {type : "text/csv"}));
+
+var list1 = $("#customInput1").data("value");
+var myBlob1 = URL.createObjectURL(new Blob([list1], {type : "text/csv"}));
+//"https://api.iextrading.com/1.0/stock/msft/chart?format=csv"
+d3.csv(myBlob1,
+  row => ({
+  	open: Number(row.open),
+  	close: Number(row.close),
+  	volume: Number(row.volume),
+    // date: parseDate(row.date),  
+    minute: parseTime(row.minute)
+	})).then((data) => {
+  	//data = data.slice(0, 200);
+    console.log(data);
+    // set the domain based on the data
+    chart.xDomain(xExtent(data))
+      .yDomain(yExtent(data))
+
+    // select and render
+    d3.select('#chart-element')
+      .datum(data)
+      .call(chart);
+  });
+
+//   d3.csv(myBlob1,
+//   row => ({
+//   	open: Number(row.open),
+//   	close: Number(row.close),
+//   	volume: Number(row.volume),
+//   	date: parseDate(row.date)
+// 	})).then((data) => {
+//   	//data = data.slice(0, 200);
+
+//     // set the domain based on the data
+//     chart.xDomain(xExtent(data))
+//       .yDomain(yExtent(data))
+
+//     // select and render
+//     d3.select('#chart-element')
+//       .datum(data)
+//       .call(chart);
+//   });
+</script>
+
 
 <div class="text-center">
     <h1 class="display-4">Chart Test</h1>
 </div>
-<br>
-@foreach(var Chart in @ViewBag.Chart)
+<div id='chart-element' style='height: 600px'></div>
+@foreach(var i in @ViewBag.DayChartText)
 {
-    <h3>Date: @Chart.date</h3>
-    <h3>Open: @Chart.open</h3>
-    <h3>High: @Chart.high</h3>
-    <h3>Low: @Chart.low</h3>
-    <h3>Close: @Chart.close</h3>
-    <h3>Volume: @Chart.volume</h3>
-    <h3>Unadjusted Volume: @Chart.unadjustedVolume</h3>
-    <h3>Change: @Chart.change</h3>
-    <h3>Change Percent: @Chart.changePercent</h3>
-    <h3>VWAP: @Chart.vwap</h3>
-    <h3>Label: @Chart.label</h3>
-    <h3>Change Over Time: @Chart.changeOverTime</h3>
-    <br>
+    <p>Date: @i.date</p>
+    <p>Minute: @i.minute</p>
+    <p>Label: @i.label</p>
+    <p>High: @i.high</p>
+    <p>Low: @i.low</p>
+    <p>Average: @i.average</p>
+    <p>Volume: @i.volume</p>
+    <p>Number Of Trades: @i.numberOfTrades</p>
 }

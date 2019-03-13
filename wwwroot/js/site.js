@@ -2,3 +2,10 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
+// var bidPriceOld = document.getElementsByClassName("BidPrice");
+// localStorage.setItem("bidPriceOld", bidPriceOld);
+
+// setTimeout(function(){
+//     window.location.reload(1);
+//  }, 5000);

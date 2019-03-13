@@ -53,7 +53,7 @@ namespace IEXStock.Controllers
 		}
 
         // Offical Open and Close 
-        [HttpGet("OfficialOpenAndClose")]
+        [HttpGet("OfficialOpenAndClose/{symbol}")]
         public async Task<IEXOfficalOpenAndClose> OfficalOpenAndClose(string symbol)
         {
             using(HttpClient httpClient = new HttpClient())
@@ -150,20 +150,56 @@ namespace IEXStock.Controllers
         //https://api.iextrading.com/1.0/stock/aapl/chart
         // Chart
         [HttpGet("Chart/{symbol}")]
-        public async Task<List<IEXChart>> Chart(string symbol)
+        public async Task<string> Chart(string symbol)
         {
             using(HttpClient httpClient = new HttpClient())
             {
-                string json = await httpClient.GetStringAsync($"https://api.iextrading.com/1.0/stock/{symbol}/chart");
-                List<IEXChart> security = JsonConvert.DeserializeObject<List<IEXChart>>(json);
-                return security;
+                return await httpClient.GetStringAsync($"https://api.iextrading.com/1.0/stock/{symbol}/chart?format=csv");
+            }
+        }
+
+        // MonthChart
+        [HttpGet("MonthChart/{symbol}")]
+        public async Task<string> MonthChart(string symbol)
+        {
+            using(HttpClient httpClient = new HttpClient())
+            {
+                return await httpClient.GetStringAsync($"https://api.iextrading.com/1.0/stock/{symbol}/chart/1m?format=csv");
+            }
+        }
+
+        // OneYearChart
+        [HttpGet("OneYearChart/{symbol}")]
+        public async Task<string> OneYearChart(string symbol)
+        {
+            using(HttpClient httpClient = new HttpClient())
+            {
+                return await httpClient.GetStringAsync($"https://api.iextrading.com/1.0/stock/{symbol}/chart/1y?format=csv");
+            }
+        }
+
+        // DayChart
+        [HttpGet("DayChart/{symbol}")]
+        public async Task<(List<IEXDayChart>, string)> DayChart(string symbol)
+        {
+            using(HttpClient httpClient = new HttpClient())
+            {
+                string json = await httpClient.GetStringAsync($"https://api.iextrading.com/1.0/stock/{symbol}/chart/1d?format=csv");
+                string json1 = await httpClient.GetStringAsync($"https://api.iextrading.com/1.0/stock/{symbol}/chart/1d");
+                List<IEXDayChart> stock = JsonConvert.DeserializeObject<List<IEXDayChart>>(json1);
+                return (stock, json);
             }
         }
 
         [HttpGet("ChartTest")]
         public async Task<IActionResult> ChartTest()
         {
-            ViewBag.Chart = await Chart("msft");
+            // ViewBag.MonthChart = await MonthChart("msft");
+            // ViewBag.Chart = await Chart("msft");
+            // ViewBag.OnYearChart = await OneYearChart("msft");
+            var DayChartVar =  await DayChart("msft");
+            ViewBag.DayChart = DayChartVar.Item2;
+            ViewBag.DayChartText = DayChartVar.Item1;
             return View();
         }
 
@@ -186,5 +222,67 @@ namespace IEXStock.Controllers
             ViewBag.Markets = await Markets();
             return View();
         }
+
+        // https://api.iextrading.com/1.0/tops?symbols=SNAP,fb,msft
+        // TOPS
+        [HttpGet("TOPS")]
+        public async Task<List<IEXTOPS>> TOPS(string symbols)
+        {
+            using(HttpClient httpClient = new HttpClient())
+            {
+                string json = await httpClient.GetStringAsync($"https://api.iextrading.com/1.0/tops?symbols={symbols}");
+                List<IEXTOPS> stocks = JsonConvert.DeserializeObject<List<IEXTOPS>>(json);
+                return stocks;
+            }
+        }
+
+        [HttpGet("TOPSTest")]
+        public async Task<IActionResult> TOPSTest()
+        {
+            string stocks = "msft,aapl,sq,fb,amd,pypl,csco,intc,abc";
+            ViewBag.TOPS = await TOPS(stocks);
+            return View();
+        }
     }
 }
+
+
+
+
+
+// <div class="grid-container">
+// @{
+//     int counter = 0;
+// }
+
+// @foreach(var Stock in ViewBag.TOPS)
+// {
+//     <div class="grid-item">
+//     <p>Symbol: @Stock.symbol</p>
+//     @if(HttpContext.Session.GetInt32("@counter+BidPrice") == null)
+//     {
+//         HttpContext.Session.SetInt32("@counter+BidPrice", @Stock.bidPrice);
+//     }
+//     if(HttpContext.Session.GetInt32("@counter+BidPrice") > @Stock.bidPrice)
+//     {
+//         // RED
+//         <p class="Red">Bid Price: @Stock.bidPrice</p>
+        
+//     }
+//     else
+//     {
+//         // GREEN
+//         <p class="Green">Bid Price: @Stock.bidPrice</p>
+        
+//     }
+//     HttpContext.Session.SetInt32("@counter+BidPrice", @Stock.bidPrice;
+    
+    
+    
+//     <p class="AskPrice">Ask Price: @Stock.askPrice</p>
+//     <p>Last Updated: @Time.FromUnixTime(Stock.lastUpdated)</p>
+//     <p>Market Percent: @Stock.marketPercent</p>
+//     </div>
+//     counter++;
+//     HttpContext.Session.SetInt32("@counter+BidPrice", @Stock.bidPrice);
+// }
