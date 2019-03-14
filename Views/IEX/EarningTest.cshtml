@@ -9,6 +9,7 @@
 <h3>Symbol: @ViewBag.Earning.symbol</h3>
 @foreach(var Earning in @ViewBag.Earning.earnings)
 {
+    <h2>@Earning.symbolId</h2>
     <h3>Actual EPS: @Earning.actualEPS</h3>
     <h3>Consensus EPS: @Earning.consensusEPS</h3>
     <h3>Estimated EPS: @Earning.estimatedEPS</h3>

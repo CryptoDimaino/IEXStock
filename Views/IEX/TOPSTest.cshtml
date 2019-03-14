@@ -13,57 +13,99 @@
 @using System.Net;
 @using System.IO;
 @using Newtonsoft.Json;
-<meta http-equiv="refresh" content="2">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- <meta http-equiv="refresh" content="2"> -->
 <div class="text-center">
     <h1 class="display-4">TOPS Test</h1>
 </div>
 <br>
+<input type="hidden" id="customInput1" data-value="@ViewBag.TOPSJson" />
 <div class="grid-container">
-@{
-    int counter = 1;
-    int scounter = 0;
-}
-
-@foreach(var Stock in ViewBag.TOPS)
-{
     <div class="grid-item">
-    <p>Symbol: @Stock.symbol</p>
-    <!-- @if(Context.Session.GetInt32("@counter") == null)
-    {
-        Console.WriteLine("HELLO HELLO");
-        Context.Session.SetInt32("@counter", (int)@Stock.bidPrice);
-    }
-    Console.WriteLine("Counter = " + counter + ". Comparing: Sessiong: " + Context.Session.GetInt32("@counter") + ". Bid Price: " + @Stock.bidPrice):
-    @if(Context.Session.GetInt32("@counter") > @Stock.bidPrice)
-    {
-        
-        // RED
-        Console.WriteLine("RED: " + counter + " Old Price:" + Context.Session.GetInt32("@counter") + " New Price: " + @Stock.bidPrice);
-
-        Context.Session.SetInt32("@counter", (int)@Stock.bidPrice);
-        Console.WriteLine("RED: " + counter + " Old Price:" + Context.Session.GetInt32("@counter") + " New Price: " + @Stock.bidPrice);
-        <p>Bid Price: <span class="Red">@Stock.bidPrice</span></p>
-    }
-    else
-    {
-        
-        //green
-        Console.WriteLine("Green: " + counter + " Old Price:" + Context.Session.GetInt32("@counter") + " New Price: " + @Stock.bidPrice);
-        Context.Session.SetInt32("@counter", (int)@Stock.bidPrice);
-        Console.WriteLine("Green: " + counter + " Old Price:" + Context.Session.GetInt32("@counter") + " New Price: " + @Stock.bidPrice);
-        <p>Bid Price: <span class="Green">@Stock.bidPrice</span></p>
-    } -->
-
-    
-    
-    
-    <p class="AskPrice">Ask Price: @Stock.askPrice</p>
-    <p>Last Updated: @Time.FromUnixTime(Stock.lastUpdated)</p>
-    <p>Market Percent: @Stock.marketPercent</p>
+        <p id="MSFT"></p>
     </div>
-    Console.WriteLine("Counter Added 1: " + counter);
-    counter++;
-    
-    
-}
+    <div class="grid-item">
+        <p id="AAPL"></p>
+    </div>
+    <div class="grid-item">
+        <p id="AMZN"></p>
+    </div>
+    <div class="grid-item">
+        <p id="FB"></p>
+    </div>
+    <div class="grid-item">
+        <p id="AMD"></p>
+    </div>
+    <div class="grid-item">
+        <p id="INTC"></p>
+    </div>
 </div>
+<script>
+$(document).ready(function() {
+	const loadData = () => {
+		var stocks = [];
+		var symbols = ['MSFT'];//, 'AAPL', 'FB', 'AMZN', 'AMD', 'INTC'];
+
+		symbols.forEach(symbol => makeAjaxCall(symbol));
+
+		function makeAjaxCall(param) {
+			$.ajax({
+				type: "GET",
+                //url: "/IEX/wwe/",
+                url: "https://api.iextrading.com/1.0/tops?symbols=" + param,
+				success: function (result) {
+                    $.each(result, function(i, value) {
+                        console.log(value);
+                        $("#" + value.symbol).html("<div class='"+ value.symbol +"'>" + " " + "<b>Symbol: " + value.symbol + "</b>" + "<br>Bid Price: " + value.bidPrice + "<br>Ask Price: " + "<span class='change'>" + value.askPrice + "</span>" + "<br>Volume: " + value.volume + "</div>");
+                    });
+                    var counter = 0;
+                    $('.change').each(function() {
+                        counter++;
+                        //console.log(parseFloat($(this).text()));
+                        
+                        //console.log(localStorage.getItem(counter))
+                        if(parseFloat($(this).text()) < localStorage.getItem(counter))
+                        { 
+                            $(this).css('color','#E60000'); 
+                        }
+                        else if(parseFloat($(this).text()) > localStorage.getItem(counter))
+                        { 
+                            $(this).css('color','#32cd32'); 
+                        }
+                        else
+                        {
+                            $(this).css('color','#000000');
+                        }
+                        localStorage.setItem(counter, this);
+                    });
+				}
+			});
+        }	
+    };
+    
+// const loadData = () => {
+//         $.ajax({
+// 			type: "GET",
+//             url: "/IEX/wwe",
+//             success: function (result) {
+//                 $.each(result, function(i, value) {
+//                     console.log(result);
+//                     //$("#" + value.symbol).html("<div class='"+ value.symbol +"'>" + " " + "<b>Symbol: " + value.symbol + "</b>" + "<br>Bid Price: " + value.bidPrice + "<br>Ask Price: " + "<span class='change'>" + value.askPrice + "</span>" + "<br>Volume: " + value.volume + "</div>");
+//                 });
+//             }
+//         });
+//     }
+// 	const TIME = 2 * 1000;
+// 	$(() => {
+// 		loadData();
+// 		setInterval(loadData, TIME);
+// 	});
+});
+</script>
+
+@foreach(var i in @ViewBag.TOPS)
+{
+    @i.symbol
+    <br>
+}

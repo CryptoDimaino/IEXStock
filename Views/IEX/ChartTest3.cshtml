@@ -14,7 +14,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 
-<input type="hidden" id="customInput1" data-value = "@ViewBag.MonthChart" />
+<input type="hidden" id="customInput1" data-value = "@ViewBag.YearToDateChart" />
 
 
 <script>
@@ -86,9 +86,9 @@ var myBlob1 = URL.createObjectURL(new Blob([list1], {type : "text/csv"}));
 
 
 <div class="text-center">
-    <h1 class="display-4">Standard Chart Test</h1>
+    <h1 class="display-4">Year To Date Chart Test</h1>
 </div>
 <div id='chart-element' style='height: 600px'></div>
 <a asp-controller="IEX" asp-action="ChartTest">Daily Chart</a>  
-<a asp-controller="IEX" asp-action="ChartTest2">Yearly Chart</a>
-<a asp-controller="IEX" asp-action="ChartTest3">Year To Date Chart</a>  
+<a asp-controller="IEX" asp-action="ChartTest1">Monthly Chart</a>
+<a asp-controller="IEX" asp-action="ChartTest2">Yearly Chart</a>  

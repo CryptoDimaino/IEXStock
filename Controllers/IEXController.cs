@@ -178,6 +178,16 @@ namespace IEXStock.Controllers
             }
         }
 
+        // YearToDateChart
+        [HttpGet("YearToDateChart/{symbol}")]
+        public async Task<string> YearToDateChart(string symbol)
+        {
+            using(HttpClient httpClient = new HttpClient())
+            {
+                return await httpClient.GetStringAsync($"https://api.iextrading.com/1.0/stock/{symbol}/chart/ytd?format=csv");
+            }
+        }
+
         // DayChart
         [HttpGet("DayChart/{symbol}")]
         public async Task<(List<IEXDayChart>, string)> DayChart(string symbol)
@@ -194,9 +204,6 @@ namespace IEXStock.Controllers
         [HttpGet("ChartTest")]
         public async Task<IActionResult> ChartTest()
         {
-            // ViewBag.MonthChart = await MonthChart("msft");
-            // ViewBag.Chart = await Chart("msft");
-            // ViewBag.OnYearChart = await OneYearChart("msft");
             var DayChartVar =  await DayChart("msft");
             ViewBag.DayChart = DayChartVar.Item2;
             ViewBag.DayChartText = DayChartVar.Item1;
@@ -207,6 +214,20 @@ namespace IEXStock.Controllers
         public async Task<IActionResult> ChartTest1()
         {
             ViewBag.MonthChart = await MonthChart("msft");
+            return View();
+        }
+
+        [HttpGet("ChartTest2")]
+        public async Task<IActionResult> ChartTest2()
+        {
+            ViewBag.OneYearChart = await OneYearChart("msft");
+            return View();
+        }
+
+        [HttpGet("ChartTest3")]
+        public async Task<IActionResult> ChartTest3()
+        {
+            ViewBag.YearToDateChart = await YearToDateChart("msft");
             return View();
         }
 
@@ -243,11 +264,30 @@ namespace IEXStock.Controllers
             }
         }
 
+        [HttpGet("TOPSJson")]
+        public async Task<string> TOPSJson(string symbols)
+        {
+            using(HttpClient httpClient = new HttpClient())
+            {
+                return await httpClient.GetStringAsync($"https://api.iextrading.com/1.0/tops?symbols={symbols}");
+            }
+        }
+
+        // [HttpGet("wwe")]
+        // public async Task<IActionResult> wwe()
+        // {
+        //     string stocks = "msft,aapl,sq,fb,amd,pypl,csco,intc";
+        //     ViewBag.TOPSJson1 = await TOPSJson(stocks);
+        //     //await TOPSJson(stocks);
+        //     return Json(ViewBag.TOPSJson1);
+        // }
+
         [HttpGet("TOPSTest")]
         public async Task<IActionResult> TOPSTest()
         {
-            string stocks = "msft,aapl,sq,fb,amd,pypl,csco,intc,abc";
+            string stocks = "msft,aapl,sq,fb,amd,pypl,csco,intc";
             ViewBag.TOPS = await TOPS(stocks);
+            //ViewBag.TOPSJson = await TOPSJson(stocks);
             return View();
         }
     }
@@ -292,4 +332,14 @@ namespace IEXStock.Controllers
 //     </div>
 //     counter++;
 //     HttpContext.Session.SetInt32("@counter+BidPrice", @Stock.bidPrice);
+// }
+
+//
+// [HttpGet]
+// public string Get()
+// {
+//     HttpClient http = new HttpClient();
+//     http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("APIKEY", header);
+//     var data = http.GetAsync(url).Result.Content.ReadAsStringAsync().Result;
+//     return data;
 // }
