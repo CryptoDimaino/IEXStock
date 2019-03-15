@@ -251,6 +251,24 @@ namespace IEXStock.Controllers
             return View();
         }
 
+        // https://api.iextrading.com/1.0/market
+        // Markets
+        [HttpGet("MarketChart")]
+        public async Task<string> MarketChart()
+        {
+            using(HttpClient httpClient = new HttpClient())
+            {
+                return await httpClient.GetStringAsync("https://api.iextrading.com/1.0/market");
+            }
+        }
+
+        [HttpGet("MarketsTestPieChart")]
+        public async Task<IActionResult> MarketsTestPieChart()
+        {
+            ViewBag.Markets = await MarketChart();
+            return View();
+        }
+
         // https://api.iextrading.com/1.0/tops?symbols=SNAP,fb,msft
         // TOPS
         [HttpGet("TOPS")]
@@ -272,15 +290,6 @@ namespace IEXStock.Controllers
                 return await httpClient.GetStringAsync($"https://api.iextrading.com/1.0/tops?symbols={symbols}");
             }
         }
-
-        // [HttpGet("wwe")]
-        // public async Task<IActionResult> wwe()
-        // {
-        //     string stocks = "msft,aapl,sq,fb,amd,pypl,csco,intc";
-        //     ViewBag.TOPSJson1 = await TOPSJson(stocks);
-        //     //await TOPSJson(stocks);
-        //     return Json(ViewBag.TOPSJson1);
-        // }
 
         [HttpGet("TOPSTest")]
         public async Task<IActionResult> TOPSTest()

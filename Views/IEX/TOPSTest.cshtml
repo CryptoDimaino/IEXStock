@@ -1,18 +1,13 @@
 @{
     ViewData["Title"] = "TOPS Test";
 }
-@using System;
-@using System.Linq;
-@using System.Diagnostics;
-@using System.Threading.Tasks;
-@using Microsoft.AspNetCore.Mvc;
-@using Microsoft.AspNetCore.Http;
-@using System.Collections.Generic;
-@using Microsoft.EntityFrameworkCore;
-@using Microsoft.AspNetCore.Identity;
-@using System.Net;
-@using System.IO;
-@using Newtonsoft.Json;
+
+<style>
+.change {
+    font-size: 20px;
+    font-weight: bold;
+}
+</style>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <!-- <meta http-equiv="refresh" content="2"> -->
@@ -42,65 +37,69 @@
     </div>
 </div>
 <script>
-$(document).ready(function() {
-	const loadData = () => {
-		var stocks = [];
-		var symbols = ['MSFT'];//, 'AAPL', 'FB', 'AMZN', 'AMD', 'INTC'];
+$(document).ready(function()
+{
+    const loadData = () =>
+    {
+		var symbols = "MSFT,AAPL,FB,AMZN,AMD,INTC";
 
-		symbols.forEach(symbol => makeAjaxCall(symbol));
-
-		function makeAjaxCall(param) {
+        // Used when multiple symbols are called from seperate api calls.
+        //symbols.forEach(symbol => makeAjaxCall(symbol));
+        
+        // Run through API
+        makeAjaxCall(symbols);
+        function makeAjaxCall(param)
+        {
 			$.ajax({
 				type: "GET",
                 //url: "/IEX/wwe/",
                 url: "https://api.iextrading.com/1.0/tops?symbols=" + param,
-				success: function (result) {
-                    $.each(result, function(i, value) {
-                        console.log(value);
-                        $("#" + value.symbol).html("<div class='"+ value.symbol +"'>" + " " + "<b>Symbol: " + value.symbol + "</b>" + "<br>Bid Price: " + value.bidPrice + "<br>Ask Price: " + "<span class='change'>" + value.askPrice + "</span>" + "<br>Volume: " + value.volume + "</div>");
+                success: function (result)
+                {
+                    $.each(result, function(i, value)
+                    {
+                        $("#" + value.symbol).html("<div class='"+ value.symbol +"'>" + " " + "<b>Symbol: " + value.symbol + "</b>" + "<br>Price: " + "<span class='change'>" + value.lastSalePrice.toFixed(2) + "</span>" + "<br>Volume: " + value.volume + "</div>");
                     });
+
                     var counter = 0;
-                    $('.change').each(function() {
+                    // Loop through each stock and compare the price to the old price
+                    $('.change').each(function()
+                    {    
+                        var change = (parseFloat($(this).text()) - localStorage.getItem(counter.toString())).toFixed(2);
+                        change = change;
+
+                        // Compares current stock Price with previous Price
+                        if(parseFloat($(this).text()) < localStorage.getItem(counter.toString()))
+                        { 
+                            $(this).css('color','#E60000').append(" " + change); 
+                        }
+                        else if(parseFloat($(this).text()) > localStorage.getItem(counter.toString()))
+                        { 
+                            $(this).css('color','#32cd32').append(" " + change); 
+                        }
+
+                        // Sets up previous Price
+                        localStorage.setItem(counter.toString(), parseFloat($(this).text()));
                         counter++;
-                        //console.log(parseFloat($(this).text()));
-                        
-                        //console.log(localStorage.getItem(counter))
-                        if(parseFloat($(this).text()) < localStorage.getItem(counter))
-                        { 
-                            $(this).css('color','#E60000'); 
-                        }
-                        else if(parseFloat($(this).text()) > localStorage.getItem(counter))
-                        { 
-                            $(this).css('color','#32cd32'); 
-                        }
-                        else
-                        {
-                            $(this).css('color','#000000');
-                        }
-                        localStorage.setItem(counter, this);
                     });
 				}
 			});
-        }	
+        }
     };
     
-// const loadData = () => {
-//         $.ajax({
-// 			type: "GET",
-//             url: "/IEX/wwe",
-//             success: function (result) {
-//                 $.each(result, function(i, value) {
-//                     console.log(result);
-//                     //$("#" + value.symbol).html("<div class='"+ value.symbol +"'>" + " " + "<b>Symbol: " + value.symbol + "</b>" + "<br>Bid Price: " + value.bidPrice + "<br>Ask Price: " + "<span class='change'>" + value.askPrice + "</span>" + "<br>Volume: " + value.volume + "</div>");
-//                 });
-//             }
-//         });
-//     }
-// 	const TIME = 2 * 1000;
-// 	$(() => {
-// 		loadData();
-// 		setInterval(loadData, TIME);
-// 	});
+    // Setup time to call loadData time in milliseconds
+	const TIME = 2 * 1000;
+    $(() =>
+    {
+		loadData();
+		setInterval(loadData, TIME);
+    });
+
+    window.onbeforeunload = function()
+    {
+        localStorage.removeItem(key);
+        return '';
+    };
 });
 </script>
 
