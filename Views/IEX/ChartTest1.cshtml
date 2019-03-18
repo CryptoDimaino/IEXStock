@@ -27,14 +27,19 @@ const volumeSeries = fc.autoBandwidth(fc.seriesSvgBar())
    )
 
 // adapt the d3 time scale to add discontinuities, so that weekends are removed
-const start = new Date(2019, 1, 18);
+const start = new Date(2019, 1, 16);
 const end = new Date(2019, 1, 19);
 console.log(start);
 console.log(end);
 const range = fc.discontinuitySkipWeekends();
+const range1 = fc.discontinuityRange([start,end]);
 const xScale = fc.scaleDiscontinuous(d3.scaleTime())
-  //.discontinuityProvider(fc.discontinuityRange([start,end]))
-  .discontinuityProvider(fc.discontinuitySkipWeekends());
+  .discontinuityProvider(fc.discontinuityRange([start,end]))
+  //.discontinuityProvider(fc.discontinuitySkipWeekends());
+    //.discontinuityProvider(range, range1);
+   // xScale(range1);
+//const xScale = newxScale.scaleDiscontinuous(d3.scaleTime())
+ // .discontinuityProvider(fc.discontinuityRange([start,end]));
   
 const chart = fc.chartSvgCartesian(
     xScale,
